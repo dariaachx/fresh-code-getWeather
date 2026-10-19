@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script defer src="./src/index.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -22,7 +23,7 @@
         <div>
             <div>
                 <label for="city-name-radio">City name</label>
-                <input type="radio" name="choose" id="city-name-radio">
+                <input type="radio" name="choose" id="city-name-radio" checked>
             </div>
             <div>
                 <label for="city-id-radio">City ID</label>
@@ -47,7 +48,7 @@
         </div>
 
         <div>
-            <button type="submit">Weather</button>
+            <button type="submit" id="weather-btn">Weather</button>
             <button type="reset">Cancel</button>
         </div>
     </form>

@@ -1,50 +1,68 @@
 'use strict'
 
-// const weatherUrl = 'https://api.openweathermap.org/data/2.5/weather'
 
 const param = {
-    url: 'https://api.openweathermap.org/data/2.5/weather',
+    link: 'https://api.openweathermap.org/data/2.5/weather',
     appid: '819ff849d6d8722dcf9d240171a2a950',
 }
 
-function getWeather(){
-    const cityName = document.querySelector('#city-name').value
-    const cityId = document.querySelector('#city-id').value
+const cityNameRadio = document.querySelector('#city-name-radio')
+const cityIdRadio = document.querySelector('#city-id-radio')
+const cityName = document.querySelector('#city-name')
+const cityId = document.querySelector('#city-id')
 
-    const currentTemperature = document.querySelector('#temprature')
-    currentTemperature = data.main.temp
 
-    const currentWind = document.querySelector('#wind-speed')
-    currentTemperature = data.wind.speed
-
-    const currentHumidity = document.querySelector('#humidity')
-    currentTemperature = data.main.humidity
-    
-    const cityNameRadio = document.querySelector('#city-name-radio')
-    const cityIdRadio = document.querySelector('#city-id-radio')
-
-    cityNameRadio.addEventListener('click', (event) => {
-        fetch(
-        `${param.url}?id=${param.cityName}&units=metric&appid=${param.appid}`
-        )
-    })
-    cityIdRadio.addEventListener('click', (event) => {
-        fetch(
-        `${param.url}?id=${param.cityId}&units=metric&appid=${param.appid}`
-        )
-    })
-
-    
-    .then((weather) => {
-        console.log(weather)
-        if(!weather.ok) throw new Error('Error')
-        return weather.json()
-    })
-    .then((data) => (
-        console.log(data)
-    ))
-    .catch((error) => {
-        console.log(error)
-    })
+function radioButt() {
+    if(cityNameRadio.checked){
+        cityId.disabled = true;
+        cityName.disabled = false;
+        cityId.value = ''
+    }else{
+        cityName.disabled = true;
+        cityId.disabled = false;
+        cityName.value =''
+    }
 }
-// getWeather()
+cityNameRadio.addEventListener('change', radioButt);
+cityIdRadio.addEventListener('change', radioButt);
+radioButt()
+
+
+
+async function getWeather(){
+    const cityNameVal = cityName.value
+    const cityIdVal = cityId.value
+    let url = ''
+
+    if(cityNameRadio.checked){
+        url = `${param.link}?q=${cityNameVal}&units=metric&appid=${param.appid}`
+    } else {
+        url = `${param.link}?id=${cityIdVal}&units=metric&appid=${param.appid}`
+    }
+
+    try {
+        const response = await fetch(url)
+        if(!response.ok){
+            throw new Error('Error request')
+        }
+
+            const data = await response.json()
+            const currentTemperature = data.main.temp
+            const currentWind = data.wind.speed
+            const currentHumidity = data.main.humidity
+
+            document.querySelector('#temprature').value = Math.round(currentTemperature) + ' °C'
+            document.querySelector('#wind-speed').value = currentWind + ' m/s'
+            document.querySelector('#humidity').value = currentHumidity + ' %'
+        
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+
+const weatherButton = document.querySelector('#weather-btn')
+weatherButton.addEventListener('click', (e) => {
+    e.preventDefault()
+    getWeather()
+})
